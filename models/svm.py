@@ -36,7 +36,6 @@ class SVM():
         for epoch in range(1, self.maxEpochs):
             X,y = shuffle(X,y)
             w, f = SGD(self.funObj, w, X, y, verbose=True, alpha=self.alpha)
-
         self.weights = w
 
 

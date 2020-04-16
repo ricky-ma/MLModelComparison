@@ -78,6 +78,7 @@ if __name__ == '__main__':
 
 
     if question == "svm":
+        # TODO: fix error/reimplement
         with gzip.open(os.path.join('mnist.pkl.gz'), 'rb') as f:
             train_set, valid_set, test_set = pickle.load(f, encoding="latin1")
         X, y = train_set
@@ -134,7 +135,7 @@ if __name__ == '__main__':
 
         binarizer = LabelBinarizer()
         Y = binarizer.fit_transform(y)
-        #TODO: convolutional neural network (CNN)
+        #TODO: convolution neural network (CNN)
 
 
     else:

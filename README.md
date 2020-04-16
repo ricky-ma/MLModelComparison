@@ -1,5 +1,5 @@
 # MNISTModelComparison
-Comparison of different machine learning models on the MNIST dataset.
+Comparison of machine learning models built from scratch, trained and tested on the MNIST dataset. Models and techniques implemented include K-nearest neighbours, linear/logistical multi-class regression, standard/stochastic gradient descent, principal component analyses, support vector machines, neural networks, and convolution neural networks.
 
 ## Introduction
 
