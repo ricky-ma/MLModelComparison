@@ -51,6 +51,9 @@ if __name__ == '__main__':
         binarizer = LabelBinarizer()
         Y = binarizer.fit_transform(y)
 
+        X_subset = X[:100]
+        y_subset = y[:100]
+
         # print("Fitting pricipal components")
         # model = pca.AlternativePCA(k=300)
         # model.fit(X)

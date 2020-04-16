@@ -1,6 +1,7 @@
 import numpy as np
 from numpy.linalg import norm, solve
 import utils
+from sklearn.utils import shuffle
 
 
 def log_1_plus_exp_safe(x):
@@ -21,39 +22,42 @@ class kernelLogRegL2():
         self.kernel_fun = kernel_fun
         self.kernel_args = kernel_args
 
+
     def funObj(self, u, K, y):
         yKu = y * (K@u)
-
-        # Calculate the function value
-        f = np.sum(np.log(1. + np.exp(-yKu)))
-        f = np.sum(log_1_plus_exp_safe(-yKu))
-
-        # Add L2 regularization
-        f += 0.5 * self.lammy * u.T@K@u
-
-        # Calculate the gradient value
-        res = - y / (1. + np.exp(yKu))
+        # f = np.sum(np.log(1. + np.exp(-yKu)))
+        f = np.sum(log_1_plus_exp_safe(-yKu))   # Calculate the function value
+        f += 0.5 * self.lammy * u.T@K@u         # Add L2 regularization
+        res = - y / (1. + np.exp(yKu))          # Calculate the gradient value
         g = (K.T@res) + self.lammy * K@u
-
         return f, g
 
 
     def fit(self, X, y):
         n, d = X.shape
-        self.X = X
         print("Calculating kernel")
         K = self.kernel_fun(X,X, **self.kernel_args)
-        print("Checking gradient")
-        utils.check_gradient(self, K, y, n, verbose=self.verbose)
+        # print("Checking gradient")
+        # utils.check_gradient(self, K, y, n, verbose=self.verbose)
         print("Optimizing")
         self.u, f = findMin(self.funObj, np.zeros(n), self.maxEvals, K, y, verbose=self.verbose)
 
+
     def predict(self, Xtest):
         Ktest = self.kernel_fun(Xtest, self.X, **self.kernel_args)
-        return np.sign(Ktest@self.u)
+        return np.sign(Ktest@self.weights)
 
 
-
+def SGD(funObj, w, *args, verbose=0, alpha):
+    # Evaluate the initial function value and gradient
+    f, g = funObj(w, *args)
+    w_new = w - alpha * g
+    f_new, g_new = funObj(w_new, *args)
+    print("loss: %.3f" % f_new)
+    # Update parameters/function/gradient
+    w = w_new
+    f = f_new
+    return w, f
 
 
 def findMin(funObj, w, maxEvals, *args, verbose=0):
