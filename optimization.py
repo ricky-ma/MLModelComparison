@@ -1,17 +1,21 @@
 import numpy as np
 from numpy.linalg import norm, solve
-
+from sklearn.utils import shuffle
 
 # stochastic gradient descent
-def SGD(funObj, w, *args, verbose=0, alpha):
-    # Evaluate the initial function value and gradient
-    f, g = funObj(w, *args)
-    w_new = w - alpha * g
-    f_new, g_new = funObj(w_new, *args)
-    print("loss: %.3f" % f_new)
-    # Update parameters/function/gradient
-    w = w_new
-    f = f_new
+def SGD(funObj, w, X, y, *args, alpha=0.001, epochs=10, batch_size=5000):
+    for epoch in range(epochs):
+        print("epoch: %.0f" % epoch)
+        X, y = shuffle(X, y)
+        for i in range(0, X.shape[0], batch_size):
+            # Evaluate the initial function value and gradient
+            f, g = funObj(w, X, y, *args)
+            w_new = w - alpha * g
+            f_new, g_new = funObj(w_new, X, y, *args)
+            print("loss: %.3f" % f_new)
+            # Update parameters/function/gradient
+            w = w_new
+            f = f_new
     return w, f
 
 
@@ -39,15 +43,15 @@ def findMin(funObj, w, maxEvals, *args, verbose=0):
             if f_new <= f - gamma * alpha*gg:
                 break
 
-            if verbose > 1:
-                print("f_new: %.3f - f: %.3f - Backtracking..." % (f_new, f))
+            # if verbose > 1:
+            print("f_new: %.3f - f: %.3f - Backtracking..." % (f_new, f))
 
             # Update step size alpha
             alpha = (alpha**2) * gg/(2.*(f_new - f + alpha*gg))
 
         # Print progress
-        if verbose > 0:
-            print("%d - loss: %.3f" % (funEvals, f_new))
+        # if verbose > 0:
+        print("%d - loss: %.3f" % (funEvals, f_new))
 
         # Update step-size for next iteration
         y = g_new - g
@@ -57,8 +61,8 @@ def findMin(funObj, w, maxEvals, *args, verbose=0):
         if np.isnan(alpha) or alpha < 1e-10 or alpha > 1e10:
             alpha = 1.
 
-        if verbose > 1:
-            print("alpha: %.3f" % (alpha))
+        # if verbose > 1:
+        print("alpha: %.3f" % (alpha))
 
         # Update parameters/function/gradient
         w = w_new

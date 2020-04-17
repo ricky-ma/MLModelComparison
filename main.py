@@ -64,7 +64,7 @@ if __name__ == '__main__':
 
         print("Fitting regression model")
         start_time = time.time()
-        model = regression.kernelLogRegL2(kernel_fun=regression.kernel_poly, verbose=2)
+        model = regression.logRegL2(verbose=True)
         model.fit(X,y)
 
         y_pred = model.predict(X)

@@ -1,4 +1,5 @@
 import numpy as np
+import utils
 from optimization import findMin, SGD
 
 
@@ -12,6 +13,41 @@ def log_1_plus_exp_safe(x):
 
 def kernel_poly(X1, X2, p=9):
     return (1+np.dot(X1,X2.T))**p
+
+
+class logRegL2():
+    # L2 Regularized Logistic Regression (no intercept)
+    def __init__(self, lammy=1.0, verbose=0, maxEvals=150, alpha = 0.001):
+        self.verbose = verbose
+        self.lammy = lammy
+        self.maxEvals = maxEvals
+        self.alpha = alpha
+
+    def funObj(self, w, X, y):
+        yXw = y * X.dot(w)
+        # f = np.sum(np.log(1. + np.exp(-yXw))) # Calculate the function value
+        f = np.sum(log_1_plus_exp_safe(-yXw))
+        f += 0.5 * self.lammy * np.sum(w**2)    # Add L2 regularization
+        res = - y / (1. + np.exp(yXw))          # Calculate the gradient value
+        g = X.T.dot(res) + self.lammy * w
+        return f, g
+
+    def fit(self,X, y):
+        # add intercept
+        intercept = np.ones((X.shape[0], 1))
+        X = np.concatenate((intercept, X), axis=1)
+        n, d = X.shape
+        # initialize weights
+        self.w = np.zeros(d)
+        # optimize
+        # utils.check_gradient(self, X, y, d, verbose=self.verbose)
+        # self.w, f = findMin(self.funObj, np.zeros(d), self.maxEvals, X, y, verbose=2)
+        self.w, f = SGD(self.funObj, self.w, X, y)
+
+    def predict(self, X):
+        intercept = np.ones((X.shape[0], 1))
+        X = np.concatenate((intercept, X), axis=1)
+        return np.sign(X@self.w)
 
 
 class kernelLogRegL2():
