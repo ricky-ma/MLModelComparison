@@ -21,7 +21,7 @@ A hidden layer size of 500 was used, which took about 3 hours to train. An alpha
 | Model               | Test Error (%)|
 | -------------       |:-------------:|
 | KNN                 | 3.19          |
-| logistic regression |               |
+| softmax regression  | 19.97         |
 | SVM                 |               |
 | MLP                 | 1.57          |
 | CNN                 |               |

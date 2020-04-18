@@ -28,11 +28,12 @@ class Softmax():
         self.lammy = lammy
         self.maxEvals = maxEvals
 
+
     def funObj(self, w, X, y):
         n = X.shape[0]  # First we get the number of training examples
         prob = softmax(np.dot(X, w))
-        f = (-1 / n) * np.sum(y * np.log(prob)) + (self.lammy / 2) * np.sum(w * w)  # Calculate loss
-        g = (-1 / n) * np.dot(X.T, (y - prob)) + self.lammy * w  # Calculate gradient
+        f = (-1 / n) * np.sum(y * np.log(prob))  # Calculate loss
+        g = (-1 / n) * np.dot(X.T, (y - prob))   # Calculate gradient
 
         # # Add L2 regularization
         f += 0.5 * self.lammy * np.sum(w**2)
@@ -43,8 +44,8 @@ class Softmax():
     def fit(self, X, y):
         X = np.insert(X, 0, 1, axis=1)  # Add bias variable
         self.w = np.zeros([X.shape[1],10])
-        (self.w, f) = findMin(self.funObj, self.w, self.maxEvals, X, y, verbose=2)
-        # self.w, f = SGD(self.funObj, self.w, X, y, epochs=10, batch_size=10000)
+        # (self.w, f) = findMin(self.funObj, self.w, self.maxEvals, X, y, verbose=2)
+        self.w, f = SGD(self.funObj, self.w, X, y, alpha=0.1, epochs=10, batch_size=5000)
 
 
     def predict(self, X):

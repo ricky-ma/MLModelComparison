@@ -55,7 +55,7 @@ if __name__ == '__main__':
         y_subset = y[:100]
 
         # print("Fitting pricipal components")
-        # model = pca.AlternativePCA(k=300)
+        # model = pca.AlternativePCA(k=100)
         # model.fit(X)
         # print("Compressing")
         # Z = model.compress(X)
