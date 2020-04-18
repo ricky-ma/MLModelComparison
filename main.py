@@ -64,8 +64,8 @@ if __name__ == '__main__':
 
         print("Fitting regression model")
         start_time = time.time()
-        model = regression.logRegL2(verbose=True)
-        model.fit(X,y)
+        model = regression.Softmax(verbose=True)
+        model.fit(X,Y)
 
         y_pred = model.predict(X)
         tr_error = np.mean(y_pred != y)

@@ -3,11 +3,13 @@ from numpy.linalg import norm, solve
 from sklearn.utils import shuffle
 
 # stochastic gradient descent
-def SGD(funObj, w, X, y, *args, alpha=0.001, epochs=10, batch_size=5000):
-    for epoch in range(epochs):
+def SGD(funObj, w, X, y, *args, alpha=1, epochs=10, batch_size=10000):
+    for epoch in range(1, epochs+1):
+        alpha = step_decay(epoch)
         print("epoch: %.0f" % epoch)
         X, y = shuffle(X, y)
         for i in range(0, X.shape[0], batch_size):
+            if (epoch - 1 % 5 == 0): print("alpha: %.0f" % alpha)
             # Evaluate the initial function value and gradient
             f, g = funObj(w, X, y, *args)
             w_new = w - alpha * g
@@ -17,6 +19,14 @@ def SGD(funObj, w, X, y, *args, alpha=0.001, epochs=10, batch_size=5000):
             w = w_new
             f = f_new
     return w, f
+
+
+def step_decay(epoch):
+   initial_alpha = 0.1
+   drop = 0.5
+   epochs_drop = 5.0
+   alpha = initial_alpha * np.power(drop, np.floor((1+epoch)/epochs_drop))
+   return alpha
 
 
 # standard gradient descent, quadratic interpolation to determine alpha
