@@ -6,7 +6,6 @@ class PCA:
     '''
     Solves the PCA problem min_Z,W (Z*W-X)^2 using SVD
     '''
-
     def __init__(self, k):
         self.k = k
 

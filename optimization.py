@@ -22,15 +22,15 @@ def SGD(funObj, w, X, y, *args, alpha=1, epochs=10, batch_size=10000):
 
 
 def step_decay(epoch):
-   initial_alpha = 1.
+   initial_alpha = 0.01
    drop = 0.5
-   epochs_drop = 10.0
+   epochs_drop = 5.0
    alpha = initial_alpha * np.power(drop, np.floor((1+epoch)/epochs_drop))
    return alpha
 
 
 # standard gradient descent, quadratic interpolation to determine alpha
-def findMin(funObj, w, maxEvals, *args, verbose=0):
+def findMin(funObj, w, *args, maxEvals=1000, verbose=0):
     # Parameters of the Optimization
     optTol = 1e-2
     gamma = 1e-4
@@ -50,6 +50,8 @@ def findMin(funObj, w, maxEvals, *args, verbose=0):
             f_new, g_new = funObj(w_new, *args)
 
             funEvals += 1
+            print(f_new)
+            print(gg)
             if f_new <= f - gamma * alpha*gg:
                 break
 
@@ -95,7 +97,7 @@ def findMin(funObj, w, maxEvals, *args, verbose=0):
     return w, f
 
 
-def adamGD(batch, num_classes, alpha, dim, n_c, beta1, beta2, params, cost, conv):
+def adamGD(batch, classes, alpha, dim, n_c, beta1, beta2, params, cost, conv):
     [f1, f2, w3, w4, b1, b2, b3, b4] = params
 
     X = batch[:, 0:-1]  # get batch inputs
@@ -135,7 +137,7 @@ def adamGD(batch, num_classes, alpha, dim, n_c, beta1, beta2, params, cost, conv
 
     for i in range(batch_size):
         x = X[i]
-        y = np.eye(num_classes)[int(Y[i])].reshape(num_classes, 1)  # convert label to one-hot
+        y = np.eye(classes)[int(Y[i])].reshape(classes, 1)  # convert label to one-hot
 
         # Collect Gradients for training example
         grads, loss = conv(x, y, params, 1, 2, 2)

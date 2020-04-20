@@ -68,7 +68,6 @@ if __name__ == '__main__':
 
 
     if question == "svm":
-        # TODO: fix error/reimplement
         with gzip.open(os.path.join('data/mnist.pkl.gz'), 'rb') as f:
             train_set, valid_set, test_set = pickle.load(f, encoding="latin1")
         X, y = train_set
@@ -78,7 +77,7 @@ if __name__ == '__main__':
         Y = binarizer.fit_transform(y)
 
         start_time = time.time()
-        model = svm.SVM()
+        model = svm.SVM(epochs=20, batchSize=2500)
         model.fit(X,y)
         y_pred = model.predict(X)
         tr_error = np.mean(y_pred != y)

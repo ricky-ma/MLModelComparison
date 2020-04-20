@@ -1,28 +1,6 @@
 import numpy as np
 from optimization import findMin, SGD
-
-
-# helper functions to transform between one big vector of weights
-# and a list of layer parameters of the form (W,b)
-def flatten_weights(weights):
-    return np.concatenate([w.flatten() for w in sum(weights, ())])
-
-
-def unflatten_weights(weights_flat, layer_sizes):
-    weights = list()
-    counter = 0
-    for i in range(len(layer_sizes) - 1):
-        W_size = layer_sizes[i + 1] * layer_sizes[i]
-        b_size = layer_sizes[i + 1]
-
-        W = np.reshape(weights_flat[counter:counter + W_size], (layer_sizes[i + 1], layer_sizes[i]))
-        counter += W_size
-
-        b = weights_flat[counter:counter + b_size][None]
-        counter += b_size
-
-        weights.append((W, b))
-    return weights
+from utils import flatten_weights, unflatten_weights
 
 
 def log_sum_exp(Z):
@@ -39,7 +17,6 @@ class NeuralNet():
 
     def funObj(self, weights_flat, X, y):
         weights = unflatten_weights(weights_flat, self.layer_sizes)
-
         activations = [X]
         for W, b in weights:
             Z = X @ W.T + b
