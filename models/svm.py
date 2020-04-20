@@ -1,8 +1,9 @@
 import numpy as np
 from sklearn.utils import shuffle
+from optimization import findMin, SGD
 
 class SVM():
-    def __init__(self, lammy=1.0, alpha=0.0001, maxEpochs=1000, batchSize=500):
+    def __init__(self, lammy=1.0, alpha=0.01, maxEpochs=1000, batchSize=500):
         self.lammy = lammy
         self.alpha = alpha
         self.maxEpochs = maxEpochs
@@ -13,50 +14,39 @@ class SVM():
         N,D = X.shape
 
         # Calculate the function value (hinge loss)
-        scores = X.dot(w)
-        labels = scores[np.arange(N), y]
-        margins = np.max(0, 1. - labels[:,np.newaxis] + X.dot(w))
+        scores = np.dot(X,w)
+        yi_scores = scores[np.arange(scores.shape[0]),y]
+        margins = np.maximum(0, scores - np.matrix(yi_scores).T + 1)
+
+
+        # margins = 1 - y + np.dot(X,w)
+        # margins[margins < 0] = 0
         margins[np.arange(N), y] = 0
-        f = np.sum(margins) / N
-        f += 0.5 * self.lammy * np.sum(w*w) # Add L2 regularization
+        f = np.mean(np.sum(margins, axis=1))
+        f += 0.5 * self.lammy * np.sum(w**2) # Add L2 regularization
 
         # Calculate the gradient value
-        res = np.zeros(margins.shape)
+        res = margins
         res[margins > 0] = 1
-        res[np.arange(N),y] = -np.sum(res, axis=1)
-        g = X.T.dot(res) / N
+        row_sum = np.sum(res, axis=1)
+        res[np.arange(N), y] = -row_sum.T
+        g = np.dot(X.T, res) / N
         g += self.lammy*w # Add L2 regularization
 
         return f, g
 
 
     def fit(self, X, y):
-        N,D = X.shape
-        w = np.zeros((D, 10))
-        for epoch in range(1, self.maxEpochs):
-            X,y = shuffle(X,y)
-            w, f = SGD(self.funObj, w, X, y, verbose=True, alpha=self.alpha)
-        self.weights = w
+        X = np.insert(X, 0, 1, axis=1)  # Add bias variable
+        self.weights = np.zeros([X.shape[1], 10])
+        self.weights, f = SGD(self.funObj, self.weights, X, y, alpha=1., epochs=3, batch_size=2500)
 
 
     def predict(self, X):
-        y = np.dot(X, self.weights.T)
-        prediction = y.argmax(axis=1)
-        print(y)
-        return prediction
-
-
-def SGD(funObj, w, *args, verbose=0, alpha):
-    # Evaluate the initial function value and gradient
-    f, g = funObj(w, *args)
-    w_new = w - alpha * g
-    f_new, g_new = funObj(w_new, *args)
-    print("loss: %.3f" % f_new)
-
-    # Update parameters/function/gradient
-    w = w_new
-    f = f_new
-    return w, f
+        X = np.insert(X, 0, 1, axis=1)  # Add bias variable
+        probabilities = np.dot(X, self.weights)
+        predictions = np.argmax(probabilities, axis=1)
+        return predictions
 
 
 def flatten_weights(weights):

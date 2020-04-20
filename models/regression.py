@@ -11,10 +11,6 @@ def log_1_plus_exp_safe(x):
     return out
 
 
-def sigmoid(z):
-    return 1 / (1 + np.exp(-z))
-
-
 def softmax(z):
     z -= np.max(z)
     sm = (np.exp(z).T / np.sum(np.exp(z),axis=1)).T
@@ -22,7 +18,7 @@ def softmax(z):
 
 
 class Softmax():
-    # L2 Regularized Softmax Regression
+    # L2 Regularized Multiclass Softmax Regression
     def __init__(self, lammy=1.0, verbose=0, maxEvals=150):
         self.verbose = verbose
         self.lammy = lammy
@@ -45,7 +41,7 @@ class Softmax():
         X = np.insert(X, 0, 1, axis=1)  # Add bias variable
         self.w = np.zeros([X.shape[1],10])
         # (self.w, f) = findMin(self.funObj, self.w, self.maxEvals, X, y, verbose=2)
-        self.w, f = SGD(self.funObj, self.w, X, y, alpha=0.1, epochs=10, batch_size=5000)
+        self.w, f = SGD(self.funObj, self.w, X, y, alpha=0.1, epochs=2, batch_size=5000)
 
 
     def predict(self, X):

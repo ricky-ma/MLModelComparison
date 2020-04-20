@@ -7,7 +7,7 @@ import time
 
 from sklearn.preprocessing import LabelBinarizer
 
-from models import mlp, regression, knn, svm, pca
+from models import mlp, regression, knn, svm, pca, cnn
 
 
 def load_dataset(filename):
@@ -24,7 +24,7 @@ if __name__ == '__main__':
 
 
     if question == "knn":
-        with gzip.open(os.path.join('mnist.pkl.gz'), 'rb') as f:
+        with gzip.open(os.path.join('data/mnist.pkl.gz'), 'rb') as f:
             train_set, valid_set, test_set = pickle.load(f, encoding="latin1")
         X, y = train_set
         Xtest, ytest = test_set
@@ -44,7 +44,7 @@ if __name__ == '__main__':
 
 
     if question == "regression":
-        with gzip.open(os.path.join('mnist.pkl.gz'), 'rb') as f:
+        with gzip.open(os.path.join('data/mnist.pkl.gz'), 'rb') as f:
             train_set, valid_set, test_set = pickle.load(f, encoding="latin1")
         X, y = train_set
         Xtest, ytest = test_set
@@ -79,13 +79,10 @@ if __name__ == '__main__':
 
     if question == "svm":
         # TODO: fix error/reimplement
-        with gzip.open(os.path.join('mnist.pkl.gz'), 'rb') as f:
+        with gzip.open(os.path.join('data/mnist.pkl.gz'), 'rb') as f:
             train_set, valid_set, test_set = pickle.load(f, encoding="latin1")
         X, y = train_set
         Xtest, ytest = test_set
-
-        binarizer = LabelBinarizer()
-        Y = binarizer.fit_transform(y)
 
         start_time = time.time()
         model = svm.SVM()
@@ -101,7 +98,7 @@ if __name__ == '__main__':
 
 
     if question == "mlp":
-        with gzip.open(os.path.join('mnist.pkl.gz'), 'rb') as f:
+        with gzip.open(os.path.join('data/mnist.pkl.gz'), 'rb') as f:
             train_set, valid_set, test_set = pickle.load(f, encoding="latin1")
         X, y = train_set
         Xtest, ytest = test_set
@@ -128,14 +125,31 @@ if __name__ == '__main__':
 
 
     if question == "cnn":
-        with gzip.open(os.path.join('..', 'data', 'mnist.pkl.gz'), 'rb') as f:
+        with gzip.open(os.path.join('data/mnist.pkl.gz'), 'rb') as f:
             train_set, valid_set, test_set = pickle.load(f, encoding="latin1")
         X, y = train_set
         Xtest, ytest = test_set
 
-        binarizer = LabelBinarizer()
-        Y = binarizer.fit_transform(y)
+        X = X * 256
+        Xtest = Xtest * 256
+        y = y.reshape(len(y), 1)
+        ytest = ytest.reshape(len(ytest), 1)
+
+        Xtest_subset = Xtest[:100]
+        ytest_subset = ytest[:100]
+
         #TODO: convolution neural network (CNN)
+        start_time = time.time()
+        model = cnn.CNN(batch_size=64, num_epochs=4)
+        model.fit(X,y)
+        y_pred = model.predict(X)
+        tr_error = np.mean(y_pred != y)
+        y_pred = model.predict(Xtest_subset)
+        te_error = np.mean(y_pred != ytest_subset)
+
+        print("Training error = %.4f" % tr_error)
+        print("Testing error = %.4f" % te_error)
+        print("Runtime: %s seconds" % (time.time() - start_time))
 
 
     else:
