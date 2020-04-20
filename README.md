@@ -8,7 +8,7 @@ Comparison of machine learning models built from scratch, trained and tested on 
 ### K-Nearest Neighbours (KNN)
 A hyperparameter of k=3 resulted in a test error of $3.19\%$. Being non-parametric, a KNN implementation with such a large dataset resulted in very long prediction times ($>$ 20 mins for k=1 and k=2) due to the calculation, and especially sorting, of Euclidean distances. While doing these computations locally, both memory and disk space frequently maxed out. Nevertheless, the test error is rather low, even without other preprocessing techniques.
 
-### Logistic Regression with Principal Component Analysis (PCA)
+### Softmax Regression
 
 ### Support Vector Machines (SVM)
 

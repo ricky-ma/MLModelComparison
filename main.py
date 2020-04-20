@@ -135,8 +135,13 @@ if __name__ == '__main__':
         y = y.reshape(len(y), 1)
         ytest = ytest.reshape(len(ytest), 1)
 
-        Xtest_subset = Xtest[:100]
-        ytest_subset = ytest[:100]
+        # print("Fitting pricipal components")
+        # model = pca.AlternativePCA(k=100)
+        # model.fit(X)
+        # print("Compressing")
+        # Z = model.compress(X)
+        # print("Expanding")
+        # Xhat_pca = model.expand(Z)
 
         #TODO: convolution neural network (CNN)
         start_time = time.time()
@@ -144,8 +149,8 @@ if __name__ == '__main__':
         model.fit(X,y)
         y_pred = model.predict(X)
         tr_error = np.mean(y_pred != y)
-        y_pred = model.predict(Xtest_subset)
-        te_error = np.mean(y_pred != ytest_subset)
+        y_pred = model.predict(Xtest)
+        te_error = np.mean(y_pred != ytest)
 
         print("Training error = %.4f" % tr_error)
         print("Testing error = %.4f" % te_error)
