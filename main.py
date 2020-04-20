@@ -27,6 +27,8 @@ if __name__ == '__main__':
             train_set, valid_set, test_set = pickle.load(f, encoding="latin1")
         X, y = train_set
         Xtest, ytest = test_set
+        X -= int(np.mean(X))
+        X /= int(np.std(X))
 
         for k in [1,2,3]:
             print("k=%d" % k)
@@ -47,6 +49,9 @@ if __name__ == '__main__':
             train_set, valid_set, test_set = pickle.load(f, encoding="latin1")
         X, y = train_set
         Xtest, ytest = test_set
+        X -= int(np.mean(X))
+        X /= int(np.std(X))
+
         binarizer = LabelBinarizer()
         Y = binarizer.fit_transform(y)
 
@@ -72,6 +77,8 @@ if __name__ == '__main__':
             train_set, valid_set, test_set = pickle.load(f, encoding="latin1")
         X, y = train_set
         Xtest, ytest = test_set
+        X -= int(np.mean(X))
+        X /= int(np.std(X))
 
         binarizer = LabelBinarizer()
         Y = binarizer.fit_transform(y)
@@ -94,6 +101,8 @@ if __name__ == '__main__':
             train_set, valid_set, test_set = pickle.load(f, encoding="latin1")
         X, y = train_set
         Xtest, ytest = test_set
+        X -= int(np.mean(X))
+        X /= int(np.std(X))
 
         binarizer = LabelBinarizer()
         Y = binarizer.fit_transform(y)

@@ -29,7 +29,6 @@ class SVM():
         g /= N
         f += 0.5 * self.lammy * np.sum(w**2)
         g += self.lammy * w # Add L2 regularization
-
         return f, g
 
 
@@ -38,6 +37,7 @@ class SVM():
         self.weights = np.zeros([X.shape[1],10])
         self.weights, f = SGD(self.funObj, self.weights, X, y, alpha=self.alpha, epochs=self.epochs, batch_size=self.batchSize)
         # self.weights, f = findMin(self.funObj, self.weights, X, y, maxEvals=1000, verbose=2)
+
 
     def predict(self, X):
         X = np.insert(X, 0, 1, axis=1)  # Add bias variable
