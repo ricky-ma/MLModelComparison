@@ -189,10 +189,7 @@ class CNN():
 
 
     def fit(self, X, y):
-        X -= int(np.mean(X))
-        X /= int(np.std(X))
         train_data = np.hstack((X, y))
-
         np.random.shuffle(train_data)
 
         ## Initializing all the parameters
@@ -209,7 +206,6 @@ class CNN():
         b4 = np.zeros((w4.shape[0], 1))
 
         params = [f1, f2, w3, w4, b1, b2, b3, b4]
-
         cost = []
 
         print("Alpha:" + str(self.alpha) + ", Batch Size:" + str(self.batch_size))
@@ -235,17 +231,10 @@ class CNN():
             params = pickle.load(f)
         [f1, f2, w3, w4, b1, b2, b3, b4] = params
 
-        X -= int(np.mean(X))  # subtract mean
-        X /= int(np.std(X))  # divide by standard deviation
-        # test_data = np.hstack((X, y))
-
-        # X = test_data[:, 0:-1]
         X = X.reshape(len(X), 1, 28, 28)
-        # y = test_data[:, -1]
 
         predictions = np.array([])
         img_counter = 1
-
         for image in X:
             print("Predicting image: " + str(img_counter))
             conv1 = self.convolution(image, f1, b1, conv_s)  # convolution operation
@@ -267,7 +256,6 @@ class CNN():
             predictions = np.append(predictions, np.argmax(probs))
             img_counter += 1
 
-            # return np.argmax(probs), np.max(probs)
         return predictions.reshape(len(X), 1)
 
 

@@ -13,58 +13,33 @@ class SVM():
     def funObj(self, w, X, y):
         N,D = X.shape
 
-        # Calculate the function value (hinge loss)
-        scores = np.dot(X,w)
-        yi_scores = scores[np.arange(scores.shape[0]),y]
-        margins = np.maximum(0, scores - np.matrix(yi_scores).T + 1)
-
-
-        # margins = 1 - y + np.dot(X,w)
-        # margins[margins < 0] = 0
-        margins[np.arange(N), y] = 0
-        f = np.mean(np.sum(margins, axis=1))
-        f += 0.5 * self.lammy * np.sum(w**2) # Add L2 regularization
-
-        # Calculate the gradient value
-        res = margins
-        res[margins > 0] = 1
-        row_sum = np.sum(res, axis=1)
-        res[np.arange(N), y] = -row_sum.T
-        g = np.dot(X.T, res) / N
-        g += self.lammy*w # Add L2 regularization
-
+        f = 0
+        g = np.zeros([X.shape[1],10])
+        for i in range(N):
+            scores = np.dot(X[i], w)
+            label = scores[y[i]]
+            for j in range(10):
+                margin = 1 + scores[j] - label
+                if y[i] != j and margin > 0:
+                    f += margin
+                    g[:,y[i]] -= X[i,:]
+                    g[:,j] += X[i,:]
+        f /= N
+        f += 0.5 * self.lammy * np.sum(w**2)
+        # g -= self.lammy * w # Add L2 regularization
         return f, g
 
 
     def fit(self, X, y):
         X = np.insert(X, 0, 1, axis=1)  # Add bias variable
-        self.weights = np.zeros([X.shape[1], 10])
-        self.weights, f = SGD(self.funObj, self.weights, X, y, alpha=1., epochs=3, batch_size=2500)
+        self.weights = np.zeros([X.shape[1],10])
+        self.weights, f = SGD(self.funObj, self.weights, X, y, alpha=1., epochs=50, batch_size=2500)
 
 
     def predict(self, X):
         X = np.insert(X, 0, 1, axis=1)  # Add bias variable
         probabilities = np.dot(X, self.weights)
+        print(probabilities)
         predictions = np.argmax(probabilities, axis=1)
+        print(predictions)
         return predictions
-
-
-def flatten_weights(weights):
-    return np.concatenate([w.flatten() for w in sum(weights, ())])
-
-
-def unflatten_weights(weights_flat, layer_sizes):
-    weights = list()
-    counter = 0
-    for i in range(len(layer_sizes) - 1):
-        W_size = layer_sizes[i + 1] * layer_sizes[i]
-        b_size = layer_sizes[i + 1]
-
-        W = np.reshape(weights_flat[counter:counter + W_size], (layer_sizes[i + 1], layer_sizes[i]))
-        counter += W_size
-
-        b = weights_flat[counter:counter + b_size][None]
-        counter += b_size
-
-        weights.append((W, b))
-    return weights

@@ -6,7 +6,6 @@ import numpy as np
 import time
 
 from sklearn.preprocessing import LabelBinarizer
-
 from models import mlp, regression, knn, svm, pca, cnn
 
 
@@ -54,15 +53,6 @@ if __name__ == '__main__':
         X_subset = X[:100]
         y_subset = y[:100]
 
-        # print("Fitting pricipal components")
-        # model = pca.AlternativePCA(k=100)
-        # model.fit(X)
-        # print("Compressing")
-        # Z = model.compress(X)
-        # print("Expanding")
-        # Xhat_pca = model.expand(Z)
-
-        print("Fitting regression model")
         start_time = time.time()
         model = regression.Softmax(verbose=True)
         model.fit(X,Y)
@@ -83,6 +73,9 @@ if __name__ == '__main__':
             train_set, valid_set, test_set = pickle.load(f, encoding="latin1")
         X, y = train_set
         Xtest, ytest = test_set
+
+        binarizer = LabelBinarizer()
+        Y = binarizer.fit_transform(y)
 
         start_time = time.time()
         model = svm.SVM()
@@ -130,10 +123,13 @@ if __name__ == '__main__':
         X, y = train_set
         Xtest, ytest = test_set
 
+        # preprocessing
         X = X * 256
         Xtest = Xtest * 256
         y = y.reshape(len(y), 1)
         ytest = ytest.reshape(len(ytest), 1)
+        X -= int(np.mean(X))
+        X /= int(np.std(X))
 
         # print("Fitting pricipal components")
         # model = pca.AlternativePCA(k=100)
@@ -143,7 +139,6 @@ if __name__ == '__main__':
         # print("Expanding")
         # Xhat_pca = model.expand(Z)
 
-        #TODO: convolution neural network (CNN)
         start_time = time.time()
         model = cnn.CNN(batch_size=64, num_epochs=4)
         model.fit(X,y)

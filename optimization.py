@@ -22,9 +22,9 @@ def SGD(funObj, w, X, y, *args, alpha=1, epochs=10, batch_size=10000):
 
 
 def step_decay(epoch):
-   initial_alpha = 0.1
+   initial_alpha = 1.
    drop = 0.5
-   epochs_drop = 5.0
+   epochs_drop = 10.0
    alpha = initial_alpha * np.power(drop, np.floor((1+epoch)/epochs_drop))
    return alpha
 
