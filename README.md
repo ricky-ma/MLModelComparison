@@ -2,6 +2,7 @@
 Comparison of machine learning models built from scratch, trained and tested on the MNIST dataset. Models and techniques implemented include K-nearest neighbours, linear/logistical multi-class regression, standard/stochastic gradient descent, principal component analyses, support vector machines, neural networks, and convolution neural networks.
 
 ## Introduction
+The MNIST dataset consists of 70,000 examples of handwritten digits, split into 60,000 training examples and 10,000 test examples. Classification on this dataset involves labeling each handwritten digit as an integer from 0 to 9. Numerous machine learning models exist for multi-class classification problems like this. This project covers 5 different approaches, from linear regression to convolutional neural nets, using various optimization, regularization, and  hyperparameter tuning techniques.
 
 ## Methods
 
@@ -24,7 +25,7 @@ Adam optimization, a combination of momentum and RMSProp, was used to optimize t
 | Model               | Test Error (%)|
 | -------------       |:-------------:|
 | KNN                 | 3.19          |
-| softmax regression  | 19.97         |
+| linear regression   | 19.97         |
 | SVM                 | 9.13          |
 | MLP                 | 1.57          |
 | CNN                 | 1.63          |
