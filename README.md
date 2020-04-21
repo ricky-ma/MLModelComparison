@@ -1,5 +1,5 @@
 # MNIST From Scratch
-Comparison of machine learning models built from scratch, trained and tested on the MNIST dataset. Models and techniques implemented include K-nearest neighbours, linear/logistical multi-class regression, standard/stochastic gradient descent, principal component analyses, support vector machines, neural networks, and convolution neural networks.
+Comparison of machine learning models built from scratch, trained and tested on the MNIST dataset.
 
 ## Introduction
 The MNIST dataset consists of 70,000 examples of handwritten digits, split into 60,000 training examples and 10,000 test examples. Classification on this dataset involves labeling each handwritten digit as an integer from 0 to 9. Numerous machine learning models exist for multi-class classification problems like this. This project covers 5 different approaches, from linear regression to convolutional neural nets, using various optimization, regularization, and  hyperparameter tuning techniques.
