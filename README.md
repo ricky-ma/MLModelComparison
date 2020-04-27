@@ -1,4 +1,4 @@
-# MNIST From Scratch
+# Comparison of Machine Learning Algorithms
 Comparison of machine learning models built from scratch, trained and tested on the MNIST dataset.
 
 ## Introduction
